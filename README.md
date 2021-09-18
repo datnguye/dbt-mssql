@@ -25,3 +25,9 @@ dbt run --project-dir ./dbt --target dev [--models +exposure:*]
 ```
 dbt test --project-dir ./dbt --target dev [--models +exposure:*]
 ```
+
+
+## WHAT next?
+- Dockerize
+- CI/CD with CircleCI
+- Build a `dbt wrapper` service
