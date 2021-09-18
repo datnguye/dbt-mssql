@@ -13,15 +13,15 @@ dbt seed --project-dir ./dbt --target dev
 
 ### Run all models
 ```
-dbt run --project-dir ./dbt --target dev --full-refresh
+dbt run --project-dir ./dbt --target dev --full-refresh [--models +exposure:*]
 ```
 
 ### Run all models - DELTA mode
 ```
-dbt run --project-dir ./dbt --target dev
+dbt run --project-dir ./dbt --target dev [--models +exposure:*]
 ```
 
 ### Test models
 ```
-dbt test --project-dir ./dbt --target dev
+dbt test --project-dir ./dbt --target dev [--models +exposure:*]
 ```
