@@ -10,4 +10,5 @@ dbt seed --project-dir ./dbt --target dev
 - Run all models
 ```
 dbt run --project-dir ./dbt --target dev
+dbt run --project-dir ./dbt --target dev --full-refresh
 ```

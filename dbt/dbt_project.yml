@@ -33,9 +33,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 models:
   dbt_mssql:
-      # Applies to all files under models/example/
-      example:
-          materialized: view
+    +materialized: incremental
+    +incremental_strategy: merge
           
 vars:
   dbt_utils_dispatch_list: ['tsql_utils']
@@ -46,8 +45,10 @@ vars:
 seeds:
   dbt_mssql:
     covid:
-      CovidDataLatest:
+      covid_raw:
         +enabled: true
+        +schema: staging
+        +alias: Covid_Raw
         +full_refresh: true
         +quote_columns: false
         +column_types:

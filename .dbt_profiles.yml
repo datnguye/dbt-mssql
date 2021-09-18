@@ -7,7 +7,7 @@ dbt_mssql:
       server: DAT\DAT19
       port: 1433
       database: PLAY
-      schema: dbo
+      schema: analytic
       user: datnguye
       password: datnguye
       threads: 1
