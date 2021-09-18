@@ -3,7 +3,7 @@ dbt_mssql:
   outputs:
     dev:
       type: sqlserver
-      driver: 'SQL Server'
+      driver: 'ODBC Driver 17 for SQL Server'
       server: DAT\DAT19
       port: 1433
       database: PLAY
