@@ -1,0 +1,1 @@
+dbt run --project-dir ./dbt --target dev

@@ -1,0 +1,12 @@
+dbt_mssql:
+  target: dev
+  outputs:
+    dev:
+      type: sqlserver
+      driver: 'SQL Server'
+      server: DAT\DAT19
+      port: 1433
+      database: PLAY
+      schema: dbo
+      user: datnguye
+      password: datnguye
