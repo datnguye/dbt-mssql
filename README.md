@@ -2,6 +2,7 @@
 This is where to start the data transformation with dbt and SQL Server.
 > Sample data mart: `covid`
 
+> Start your local development with [local dev](.local_dev.md)
 
 ## Common commands:
 ### Seed data
