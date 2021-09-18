@@ -1,14 +1,26 @@
 # dbt-mssql
-This is where to start the data transformation with dbt and SQL Server
+This is where to start the data transformation with dbt and SQL Server.
+> Sample data mart: `covid`
 
-- Seed data
-[Covid Data on 2021/09/19](/dbt/data/covid/CovidDataLatest.csv)
+
+## Common commands:
+### Seed data
+[Covid](/dbt/data/covid/covid_raw.csv)
 ```
 dbt seed --project-dir ./dbt --target dev
 ```
 
-- Run all models
+### Run all models
+```
+dbt run --project-dir ./dbt --target dev --full-refresh
+```
+
+### Run all models - DELTA mode
 ```
 dbt run --project-dir ./dbt --target dev
-dbt run --project-dir ./dbt --target dev --full-refresh
+```
+
+### Test models
+```
+dbt test --project-dir ./dbt --target dev
 ```
