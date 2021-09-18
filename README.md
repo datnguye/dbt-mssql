@@ -31,3 +31,4 @@ dbt test --project-dir ./dbt --target dev [--models +exposure:*]
 - Dockerize
 - CI/CD with CircleCI
 - Build a `dbt wrapper` service
+- Clone this to do with Postgres DB
