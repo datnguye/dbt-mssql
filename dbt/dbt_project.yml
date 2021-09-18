@@ -36,3 +36,9 @@ models:
       # Applies to all files under models/example/
       example:
           materialized: view
+          
+vars:
+  dbt_utils_dispatch_list: ['tsql_utils']
+  dbt_date_dispatch_list: ['tsql_utils']
+  audit_helper_dispatch_list: ['tsql_utils']
+  dbt_expectations_dispatch_list: ['tsql_utils']

@@ -1,0 +1,6 @@
+packages:
+  # and/or calogica/dbt-date; calogica/dbt-expectations; fishtown-analytics/dbt-audit-helper
+  - package: dbt-labs/dbt_utils 
+    version: 0.7.3
+  - package: dbt-msft/tsql_utils
+    version: 0.7.1
