@@ -1,7 +1,7 @@
 version: 2
 
 exposures:
-  - name: covid_ds
+  - name: _covid_ds
     type: dashboard
     description: >
       All `Covid` dataset's tables
