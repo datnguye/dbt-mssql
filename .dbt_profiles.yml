@@ -10,3 +10,4 @@ dbt_mssql:
       schema: dbo
       user: datnguye
       password: datnguye
+      threads: 10
