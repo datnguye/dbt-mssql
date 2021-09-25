@@ -14,10 +14,10 @@ dbt_mssql:
     prod:
       type: sqlserver
       driver: 'ODBC Driver 17 for SQL Server'
-      server: DAT\DAT19
+      server: YOUR_HOST
       port: 1433
-      database: PLAY
-      schema: analytic
-      user: datnguye
-      password: datnguye
+      database: dbt
+      schema: dbo
+      user: dbt
+      password: dbt
       threads: 1
