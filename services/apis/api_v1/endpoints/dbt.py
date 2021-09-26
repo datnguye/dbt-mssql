@@ -1,20 +1,33 @@
 from typing import Any
-from fastapi import APIRouter
-from schemas import token
+from fastapi import APIRouter, BackgroundTasks
+import schemas
 
 router = APIRouter()
 
-@router.post("/provision", response_model=token.Token)
-def provision() -> Any:
+def dbt_run(mode: str = "FULL"):
+    """
+    dbt_run
+    """
+    print(f"dbt_run as {mode}")
+
+
+@router.post("/provision", response_model=schemas.Msg)
+async def provision(
+    background_tasks: BackgroundTasks
+) -> Any:
     """
     Run dbt FULL for all models
     """
-    pass
+    background_tasks.add_task(dbt_run, mode="FULL")
+    return {"msg": "Provision job has been sent in the background"}
 
 
-@router.post("/processing", response_model=token.Token)
-def processing() -> Any:
+@router.post("/processing", response_model=schemas.Msg)
+async def processing(
+    background_tasks: BackgroundTasks
+) -> Any:
     """
     Run dbt DELTA for all models
     """
-    pass
+    background_tasks.add_task(dbt_run, mode="DELTA")
+    return {"msg": "Processing job has been sent in the background"}
