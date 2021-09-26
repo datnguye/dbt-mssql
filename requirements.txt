@@ -2,6 +2,9 @@
 dbt==0.20.2
 dbt-sqlserver==0.20.1
 
+#[workflow]
+prefect==0.15.6
+
 #[api]
 uvicorn==0.15.0
 fastapi==0.54.1
