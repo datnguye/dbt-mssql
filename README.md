@@ -34,6 +34,6 @@ Build and run dbt as [processing](/dockers/processing.md)
 
 
 ## WHAT next?
-- CI/CD with CircleCI
+- CI/CD with CircleCI or Github Action
 - Build a `dbt wrapper` service
 - Clone this to do with Postgres DB
