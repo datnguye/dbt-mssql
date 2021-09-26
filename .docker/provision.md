@@ -1,10 +1,10 @@
 ### Dockerfile
-> [dbt provision dockerfile](/dockers/provision.dockerfile)
+> [dbt provision dockerfile](/.docker/provision.dockerfile)
 
 ### Build image:latest
 ```
 # docker rmi tuiladat/dbt-mssql-provision
-docker build --tag tuiladat/dbt-mssql-provision:latest . -f ./dockers/provision.dockerfile
+docker build --tag tuiladat/dbt-mssql-provision:latest . -f ./.docker/provision.dockerfile
 ```
 
 ### Run containter

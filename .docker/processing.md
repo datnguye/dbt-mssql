@@ -1,10 +1,10 @@
 ### Dockerfile
-> [dbt processing dockerfile](/dockers/processing.dockerfile)
+> [dbt processing dockerfile](/.docker/processing.dockerfile)
 
 ### Build image:latest
 ```
 # docker rmi tuiladat/dbt-mssql-processing
-docker build --tag tuiladat/dbt-mssql-processing:latest . -f ./dockers/processing.dockerfile
+docker build --tag tuiladat/dbt-mssql-processing:latest . -f ./.docker/processing.dockerfile
 ```
 
 ### Run containter
