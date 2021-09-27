@@ -27,9 +27,9 @@ dbt test --project-dir ./dbt --target dev [--models +exposure:*]
 ```
 
 ## Dockerizing
-Build and run dbt as [provisioning](/dockers/provision.md)
+Build and run dbt as [provisioning](/.docker/provision.md)
 
-Build and run dbt as [processing](/dockers/processing.md)
+Build and run dbt as [processing](/.docker/processing.md)
 
 
 
