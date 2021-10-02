@@ -1,4 +1,5 @@
 debug: False
 dbt:
+  singleton: True
   target: dev
   project_dir: "./dbt"

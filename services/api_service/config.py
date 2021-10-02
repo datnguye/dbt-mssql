@@ -13,5 +13,6 @@ with open(
     ) as init_file:
     initial_info = load_yaml_text(init_file)
 DEBUG = bool(initial_info.debug)
+DBT_SINGLETON = initial_info.dbt.singleton
 DBT_TARGET = initial_info.dbt.target
 DBT_PROJECT_DIR = initial_info.dbt.project_dir

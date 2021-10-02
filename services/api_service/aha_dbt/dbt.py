@@ -1,11 +1,11 @@
 from enum import Enum
 import json
 import os
-import signal
 import subprocess
 from prefect import Flow, Task
 from queue import Queue
 import threading
+from config import DBT_SINGLETON
 
 class DbtAction(Enum):
     DEPS = 'deps'
@@ -144,4 +144,4 @@ class DbtExec():
 
         return f.run()
 
-instance = DbtExec()
+instance = DbtExec(singleton=DBT_SINGLETON)
