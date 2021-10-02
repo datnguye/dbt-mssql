@@ -1,0 +1,4 @@
+debug: False
+dbt:
+  target: dev
+  project_dir: "./dbt"
