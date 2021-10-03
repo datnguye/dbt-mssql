@@ -1,6 +1,6 @@
 from typing import Any
+from prefect.engine.state import State, TriggerFailed
 from storage.base import BaseStorage
-import os
 import pickle
 
 
@@ -24,7 +24,7 @@ class PickleStorage(BaseStorage):
 
 
 
-    def get(self, id) -> Any:
+    def get(self, id) -> State:
         """
         Get data from a pickle file
         """
@@ -32,4 +32,4 @@ class PickleStorage(BaseStorage):
             with open(self.file_path.format(id=id), 'rb') as handle:
                 return pickle.load(handle)
         except Exception as e:
-            return str(e)
+            return TriggerFailed(message=f"ID: {id} Not found")
