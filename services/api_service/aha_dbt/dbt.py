@@ -2,11 +2,13 @@ from enum import Enum
 import json
 import os
 import subprocess
-import prefect
-from prefect import Flow, Task
 from queue import Queue
 import threading
-from config import DBT_SINGLETON
+import prefect
+from prefect import Flow, Task
+from config import DBT_SINGLETON, settings
+from storage.factory import StorageFactory
+from storage.base import BaseStorage
 
 class DbtAction(Enum):
     DEPS = 'deps'
@@ -120,6 +122,9 @@ class DbtExec():
         self.queue = Queue(maxsize=100) # Config max size
         if self.singleton:
             threading.Thread(target=self.__worker__, daemon=True).start()
+        self.log_storage = StorageFactory(
+            base=BaseStorage(settings.LOG_STORAGE)
+        ).get_storage_instance()
 
 
     def __worker__(self):
@@ -127,18 +132,19 @@ class DbtExec():
         Queue worker
         """
         while True:
-            flow = self.queue.get()
+            flow_id, flow = self.queue.get()
             print(f'Working on {flow}')
-            self.__run_flow__(flow=flow)
+            self.__run_flow__(flow_id=flow_id, flow=flow)
             print(f'Finished {flow}')
             self.queue.task_done()
 
     
-    def __run_flow__(self, flow: Flow):
+    def __run_flow__(self, flow_id: str, flow: Flow):
         """
         Run a flow
         """
-        flow.run()
+        state = flow.run()
+        self.log_storage.save(id=flow_id, data=state)
 
 
     def execute(self,
@@ -159,9 +165,9 @@ class DbtExec():
                 prev_task = task
 
         if self.singleton:
-            self.queue.put(f)
+            self.queue.put((taskid, f))
             return "Task queued"
 
-        return self.__run_flow__(flow=f)
+        return self.__run_flow__(flow_id=taskid, flow=f)
 
 instance = DbtExec(singleton=DBT_SINGLETON)

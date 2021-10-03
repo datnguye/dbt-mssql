@@ -1,5 +1,18 @@
 debug: False
+
 dbt:
   singleton: True
   target: dev
   project_dir: "./dbt"
+
+log_storage: # Take first item
+  - entry:
+    type: pickle
+    path: C:/Temp/
+  # - entry:
+  #   type: mongodb
+  #   uri: mongodb://localhost:27017
+  #   collection: logs
+  # - sqlserver:
+  #   uri: tbu
+  #   collection: logs
