@@ -18,6 +18,7 @@ class DbtAction(Enum):
 
 class DBT():
     def __init__(self,
+        taskid: str = "UNKOWN_TASKID",
         action: str = DbtAction.RUN.value,
         macro: str = None,
         macro_args: dict = None,
@@ -30,6 +31,7 @@ class DBT():
         args: list = [],
         kwargs: list = []
     ) -> None:
+        self.taskid = taskid
         self.action = action
         self.macro = macro
         self.macro_args = macro_args
@@ -79,7 +81,6 @@ class DBT():
             arguments.extend(self.args)
 
         # Additional keyword arguments
-        print(self.kwargs)
         if self.kwargs:
             for key, value in self.kwargs:
                 arguments.extend([key, value])
@@ -135,12 +136,13 @@ class DbtExec():
 
     def execute(self,
         flow_name: str = "Execution of dbt series | execute",
-        dbts: list = []
+        dbts: list = [],
+        taskid: str = None
     ):
         """
         General dbt execution
         """
-        dbt_tasks = [DbtTask() for x in dbts]
+        dbt_tasks = [DbtTask(name=f"Task:{taskid} - Job:{idx}") for idx, x in enumerate(dbts)]
         with Flow(name=flow_name) as f:
             prev_task = None
             for idx, dbt in enumerate(dbts):

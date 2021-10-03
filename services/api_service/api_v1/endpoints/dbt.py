@@ -20,7 +20,7 @@ def dbt_custom_run(arguments: list = []):
     )
     if PROJECT_DIR_ARGUMENT not in arguments:
         dbt.project_dir=DBT_PROJECT_DIR
-    result = instance.execute(f"Custom dbt flow | Task: {taskid}", [dbt])
+    result = instance.execute(f"Custom dbt flow | Task: {taskid}", [dbt], taskid=taskid)
     
     return result #TODO: Parse result to readable message
 
@@ -31,30 +31,36 @@ def dbt_run(taskid: str, full: bool = None):
     """
     result = None
     if full: # Provision job
-        result = instance.execute(f"Provisioning flow | Task: {taskid}", [
-            DBT(
-                action=DbtAction.SEED.value,
-                target=DBT_TARGET,
-                project_dir=DBT_PROJECT_DIR,
-                full_refresh=True
-            ),
-            DBT(
-                action=DbtAction.RUN.value,
-                target=DBT_TARGET,
-                project_dir=DBT_PROJECT_DIR,
-                models='+exposure:*',
-                full_refresh=True
-            )
-        ])
+        result = instance.execute(f"Provisioning flow | Task: {taskid}",
+            [
+                DBT(
+                    action=DbtAction.SEED.value,
+                    target=DBT_TARGET,
+                    project_dir=DBT_PROJECT_DIR,
+                    full_refresh=True
+                ),
+                DBT(
+                    action=DbtAction.RUN.value,
+                    target=DBT_TARGET,
+                    project_dir=DBT_PROJECT_DIR,
+                    models='+exposure:*',
+                    full_refresh=True
+                )
+            ],
+            taskid=taskid
+        )
     else: # Processing job
-        result = instance.execute(f"Processing flow | Task: {taskid}", [
-            DBT(
-                action=DbtAction.RUN.value,
-                target=DBT_TARGET,
-                project_dir=DBT_PROJECT_DIR,
-                models='+exposure:*'
-            )
-        ])
+        result = instance.execute(f"Processing flow | Task: {taskid}",
+            [
+                DBT(
+                    action=DbtAction.RUN.value,
+                    target=DBT_TARGET,
+                    project_dir=DBT_PROJECT_DIR,
+                    models='+exposure:*'
+                )
+            ],
+            taskid=taskid
+        )
 
     return result #TODO: Parse result to readable message
 
