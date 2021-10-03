@@ -11,3 +11,4 @@ class TaskMsg(BaseModel):
 class TaskState(BaseModel):
     code: int
     msg: Optional[str]
+    result: Optional[str]

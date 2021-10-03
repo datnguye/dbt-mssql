@@ -1,5 +1,7 @@
 from typing import Any
 from fastapi import APIRouter, BackgroundTasks
+from prefect.engine.serializers import Serializer
+from prefect.engine.state import Pending, Running
 import schemas
 from aha_dbt.dbt import instance, DBT, DbtAction
 from config import DBT_PROJECT_DIR, DBT_TARGET
@@ -35,7 +37,7 @@ def dbt_run(taskid: str, full: bool = None):
             [
                 DBT(
                     action=DbtAction.SEED.value,
-                    target=DBT_TARGET,
+                    target='DBT_TARGET',
                     project_dir=DBT_PROJECT_DIR,
                     full_refresh=True
                 ),
@@ -80,20 +82,6 @@ async def provision(
     )
 
 
-@router.get("/provision/{taskid}", response_model=schemas.TaskState)
-async def get_provision_status(
-    taskid: str
-) -> Any:
-    """
-    get_provision_status
-    """
-    data = instance.get_execution_state(taskid=taskid)
-    return dict(
-        code = -1 if data.is_failed() else 0,
-        msg = data.message
-    )
-
-
 @router.post("/processing", response_model=schemas.TaskMsg)
 async def processing(
     background_tasks: BackgroundTasks
@@ -106,20 +94,6 @@ async def processing(
     return dict(
         taskid=taskid,
         msg="Processing job has been sent in the background"
-    )
-
-
-@router.get("/processing/{taskid}", response_model=schemas.TaskState)
-async def get_processing_status(
-    taskid: str
-) -> Any:
-    """
-    Get processing state
-    """
-    data = instance.get_execution_state(taskid=taskid)
-    return dict(
-        code = -1 if data.is_failed() else 0,
-        msg = data.message
     )
 
 
@@ -154,15 +128,28 @@ async def custom_run(
     )
 
 
-@router.get("/custom-run/{taskid}", response_model=schemas.TaskState)
-async def get_custom_run_status(
+@router.get("/task/{taskid}", response_model=schemas.TaskState)
+async def get_task_status(
     taskid: str
 ) -> Any:
     """
     Get custom run state
+    Returned code:
+    - (99): Pending or Running
+    - (-1): Failed
+    - ( 0): Success
     """
     data = instance.get_execution_state(taskid=taskid)
+
+    if isinstance(data, Pending) or isinstance(data, Running):
+        return dict(
+            code = 99,
+            msg = data.message
+        )
+
     return dict(
         code = -1 if data.is_failed() else 0,
-        msg = data.message
+        msg = data.message,
+        result = str(data.result) if data.is_failed() else None
+        #TODO: Serialize result
     )
