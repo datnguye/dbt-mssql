@@ -6,6 +6,7 @@ from queue import Queue
 import threading
 import prefect
 from prefect import Flow, Task
+from prefect.engine.state import Pending, Running
 from config import DBT_SINGLETON, settings
 from storage.factory import StorageFactory
 from storage.base import BaseStorage
@@ -103,15 +104,18 @@ class DbtTask(Task):
             cwd=os.getcwd(),
             close_fds=True
         )
+        logs = ''
         for line in iter(sp.stdout.readline, b''):
             line = line.decode('utf-8').rstrip()
             logger.info(line)
+            logs = f"{logs}\n{line}"
         sp.wait()
         if sp.returncode != 0:
             raise prefect.engine.signals.FAIL()
 
         return (
             f"Command exited with return code {sp.returncode}",
+            logs,
             sp.returncode == 0
         )
 
@@ -143,8 +147,17 @@ class DbtExec():
         """
         Run a flow
         """
+        self.log_storage.save(id=flow_id, data=Running(message=f"Task:{flow_id} is running"))
         state = flow.run()
         self.log_storage.save(id=flow_id, data=state)
+
+    
+    def get_execution_state(self, taskid: str = None):
+        """
+        Get state of an execution
+        """
+        state = self.log_storage.get(id=taskid)
+        return state
 
 
     def execute(self,
@@ -155,6 +168,8 @@ class DbtExec():
         """
         General dbt execution
         """
+        self.log_storage.save(id=taskid, data=Pending(message=f"Task:{taskid} is in queue"))
+
         dbt_tasks = [DbtTask(name=f"Flow:{taskid} - Task:{idx}") for idx, x in enumerate(dbts)]
         with Flow(name=flow_name) as f:
             prev_task = None

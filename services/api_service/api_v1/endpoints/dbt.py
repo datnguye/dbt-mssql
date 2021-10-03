@@ -87,7 +87,8 @@ async def get_provision_status(
     """
     get_provision_status
     """
-    return {"msg": f"Status of task:{taskid} - Unknown"} # TODO: Get status of task
+    data = instance.get_execution_state(taskid=taskid)
+    return {"msg": data.message}
 
 
 @router.post("/processing", response_model=schemas.TaskMsg)
@@ -110,9 +111,10 @@ async def get_processing_status(
     taskid: str
 ) -> Any:
     """
-    get_processing_status
+    Get processing state
     """
-    return {"msg": f"Status of task:{taskid} - Unknown"} # TODO: Get status of task
+    data = instance.get_execution_state(taskid=taskid)
+    return {"msg": data.message}
 
 
 @router.post("/custom-run", response_model=schemas.TaskMsg)
@@ -151,6 +153,7 @@ async def get_custom_run_status(
     taskid: str
 ) -> Any:
     """
-    get_custom_run_status
+    Get custom run state
     """
-    return {"msg": f"Status of task:{taskid} - Unknown"} # TODO: Get status of task
+    data = instance.get_execution_state(taskid=taskid)
+    return {"msg": data.message}

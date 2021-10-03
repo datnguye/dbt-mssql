@@ -9,8 +9,8 @@ class BaseStorage():
         
 
     def save(self, id: str, data: Any) -> bool:
-        pass
+        raise Exception("Not yet implemented")
     
     
     def get(self, id) -> Any:
-        pass
+        raise Exception("Not yet implemented")
