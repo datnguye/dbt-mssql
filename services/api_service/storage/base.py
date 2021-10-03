@@ -8,7 +8,7 @@ class BaseStorage():
             if self.storage_config else None
         
 
-    def save(self, id: str, data: Any):
+    def save(self, id: str, data: Any) -> bool:
         pass
     
     
