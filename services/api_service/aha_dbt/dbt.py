@@ -129,9 +129,16 @@ class DbtExec():
         while True:
             flow = self.queue.get()
             print(f'Working on {flow}')
-            flow.run()
+            self.__run_flow__(flow=flow)
             print(f'Finished {flow}')
             self.queue.task_done()
+
+    
+    def __run_flow__(self, flow: Flow):
+        """
+        Run a flow
+        """
+        flow.run()
 
 
     def execute(self,
@@ -142,7 +149,7 @@ class DbtExec():
         """
         General dbt execution
         """
-        dbt_tasks = [DbtTask(name=f"Task:{taskid} - Job:{idx}") for idx, x in enumerate(dbts)]
+        dbt_tasks = [DbtTask(name=f"Flow:{taskid} - Task:{idx}") for idx, x in enumerate(dbts)]
         with Flow(name=flow_name) as f:
             prev_task = None
             for idx, dbt in enumerate(dbts):
@@ -155,6 +162,6 @@ class DbtExec():
             self.queue.put(f)
             return "Task queued"
 
-        return f.run()
+        return self.__run_flow__(flow=f)
 
 instance = DbtExec(singleton=DBT_SINGLETON)
