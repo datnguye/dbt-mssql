@@ -32,8 +32,15 @@ Build and run dbt as [provisioning](/.docker/provision.md)
 Build and run dbt as [processing](/.docker/processing.md)
 
 
+## The `dbt wrapper` service
+An API endpoint using FastAPI with Prefect as a Dataflow
+
+dbt will be running as the background task, optional configured in queue.
+
+
+
 
 ## WHAT next?
-- Build a `dbt wrapper` service
-- CI/CD with CircleCI or Github Action
+- `dbt wrapper` CI/CD with CircleCI or Github Action
+- `dbt wrapper` service with token
 - Clone this to do with Postgres DB
