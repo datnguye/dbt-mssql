@@ -3,6 +3,7 @@ from fastapi import APIRouter, BackgroundTasks
 import schemas
 from aha_dbt.dbt import instance, DBT, DbtAction
 from config import DBT_PROJECT_DIR, DBT_TARGET
+import libs
 
 router = APIRouter()
 PROJECT_DIR_ARGUMENT = "--project-dir"
@@ -11,24 +12,26 @@ def dbt_custom_run(arguments: list = []):
     """
     dbt custom run
     """
+    taskid = arguments[0]
+
     dbt = DBT(
-        action=arguments[0],
-        args=arguments[1:]
+        action=arguments[1],
+        args=arguments[2:]
     )
     if PROJECT_DIR_ARGUMENT not in arguments:
         dbt.project_dir=DBT_PROJECT_DIR
-    result = instance.execute("Custom dbt flow", [dbt])
+    result = instance.execute(f"Custom dbt flow | Task: {taskid}", [dbt])
     
     return result #TODO: Parse result to readable message
 
 
-def dbt_run(full: bool = None):
+def dbt_run(taskid: str, full: bool = None):
     """
     dbt run
     """
     result = None
     if full: # Provision job
-        result = instance.execute("Provisioning flow", [
+        result = instance.execute(f"Provisioning flow | Task: {taskid}", [
             DBT(
                 action=DbtAction.SEED.value,
                 target=DBT_TARGET,
@@ -44,7 +47,7 @@ def dbt_run(full: bool = None):
             )
         ])
     else: # Processing job
-        result = instance.execute("Processing flow", [
+        result = instance.execute(f"Processing flow | Task: {taskid}", [
             DBT(
                 action=DbtAction.RUN.value,
                 target=DBT_TARGET,
@@ -63,11 +66,12 @@ async def provision(
     """
     Run dbt FULL for all models
     """
-    background_tasks.add_task(dbt_run, full=True)
+    taskid = libs.new_taskid()
+    background_tasks.add_task(dbt_run, taskid=taskid, full=True)
     return dict(
-        taskid="#TODO",
+        taskid=taskid,
         msg="Provision job has been sent in the background"
-    ) # TODO: Return task ID
+    )
 
 
 @router.get("/provision/{taskid}", response_model=schemas.Msg)
@@ -87,11 +91,12 @@ async def processing(
     """
     Run dbt DELTA for all models
     """
-    background_tasks.add_task(dbt_run, full=False)
+    taskid = libs.new_taskid()
+    background_tasks.add_task(dbt_run, taskid=taskid, full=False)
     return dict(
-        taskid="#TODO",
+        taskid=taskid,
         msg="Processing job has been sent in the background"
-    ) # TODO: Return task ID
+    )
 
 
 @router.get("/processing/{taskid}", response_model=schemas.Msg)
@@ -112,7 +117,11 @@ async def custom_run(
     """
     Run dbt in whatever its native arguments
     """
-    args = [dbt_args.action]
+    taskid = libs.new_taskid()
+    args = [
+        taskid,
+        dbt_args.action
+    ]
     
     args.extend(
         [x.value for x in dbt_args.args] \
@@ -126,9 +135,9 @@ async def custom_run(
 
     background_tasks.add_task(dbt_custom_run, arguments=args)
     return dict(
-        taskid="#TODO",
+        taskid=taskid,
         msg="A dbt job has been sent in the background"
-    ) # TODO: Return task ID
+    )
 
 
 @router.get("/custom-run/{taskid}", response_model=schemas.Msg)
