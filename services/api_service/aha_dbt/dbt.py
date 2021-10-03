@@ -4,7 +4,6 @@ import os
 import subprocess
 import prefect
 from prefect import Flow, Task
-from prefect.triggers import all_successful
 from queue import Queue
 import threading
 from config import DBT_SINGLETON
@@ -19,7 +18,7 @@ class DbtAction(Enum):
 
 class DBT():
     def __init__(self,
-        action: str = DbtAction.RUN,
+        action: str = DbtAction.RUN.value,
         macro: str = None,
         macro_args: dict = None,
         profiles_dir: str = None,
@@ -27,7 +26,9 @@ class DBT():
         project_dir: str = '.',
         vars: dict = None,
         models: str = None,
-        full_refresh: bool = False
+        full_refresh: bool = False,
+        args: list = [],
+        kwargs: list = []
     ) -> None:
         self.action = action
         self.macro = macro
@@ -38,13 +39,15 @@ class DBT():
         self.vars = vars
         self.models = models
         self.full_refresh = full_refresh
+        self.args = args
+        self.kwargs = kwargs
     
     
-    def build(self, *args, **kwargs):
+    def build(self):
         """
         Build args
         """
-        arguments = [self.action.value]
+        arguments = [self.action]
 
         # Standard arguments
         if self.macro is not None:
@@ -72,13 +75,13 @@ class DBT():
             arguments.extend(["--full-refresh"])
 
         # Additional non-keyword arguments
-        if args is not None:
-            for arg in args:
-                arguments.extend([arg])
+        if self.args:
+            arguments.extend(self.args)
 
         # Additional keyword arguments
-        if kwargs is not None:
-            for key, value in kwargs.items():
+        print(self.kwargs)
+        if self.kwargs:
+            for key, value in self.kwargs:
                 arguments.extend([key, value])
 
         return arguments
@@ -108,7 +111,7 @@ class DbtTask(Task):
             f"Command exited with return code {sp.returncode}",
             sp.returncode == 0
         )
-        
+
 
 class DbtExec():
     def __init__(self, singleton: bool = True) -> None:

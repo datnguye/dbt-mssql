@@ -5,43 +5,53 @@ from aha_dbt.dbt import instance, DBT, DbtAction
 from config import DBT_PROJECT_DIR, DBT_TARGET
 
 router = APIRouter()
+PROJECT_DIR_ARGUMENT = "--project-dir"
 
-def dbt_run(
-    full: bool = True,
-    *args,
-    **kwargs
-):
+def dbt_custom_run(arguments: list = []):
     """
-    dbt_run
+    dbt custom run
+    """
+    dbt = DBT(
+        action=arguments[0],
+        args=arguments[1:]
+    )
+    if PROJECT_DIR_ARGUMENT not in arguments:
+        dbt.project_dir=DBT_PROJECT_DIR
+    result = instance.execute("Custom dbt flow", [dbt])
+    
+    return result #TODO: Parse result to readable message
+
+
+def dbt_run(full: bool = None):
+    """
+    dbt run
     """
     result = None
-    if full:
+    if full: # Provision job
         result = instance.execute("Provisioning flow", [
             DBT(
-                action=DbtAction.SEED,
+                action=DbtAction.SEED.value,
                 target=DBT_TARGET,
                 project_dir=DBT_PROJECT_DIR,
                 full_refresh=True
             ),
             DBT(
-                action=DbtAction.RUN,
+                action=DbtAction.RUN.value,
                 target=DBT_TARGET,
                 project_dir=DBT_PROJECT_DIR,
                 models='+exposure:*',
                 full_refresh=True
             )
         ])
-    else:        
+    else: # Processing job
         result = instance.execute("Processing flow", [
             DBT(
-                action=DbtAction.RUN,
+                action=DbtAction.RUN.value,
                 target=DBT_TARGET,
                 project_dir=DBT_PROJECT_DIR,
                 models='+exposure:*'
             )
         ])
-
-    # TODO: Custom run
 
     return result #TODO: Parse result to readable message
 
@@ -96,14 +106,25 @@ async def get_processing_status(
 
 @router.post("/custom-run", response_model=schemas.TaskMsg)
 async def custom_run(
-    background_tasks: BackgroundTasks,
-    *args,
-    **kwargs
+    dbt_args: schemas.DbtArgument,
+    background_tasks: BackgroundTasks
 ) -> Any:
     """
     Run dbt in whatever its native arguments
     """
-    background_tasks.add_task(dbt_run, args, kwargs)
+    args = [dbt_args.action]
+    
+    args.extend(
+        [x.value for x in dbt_args.args] \
+        if dbt_args.args and len(dbt_args.args) > 0
+        else []
+    )
+    
+    if dbt_args.kwargs and len(dbt_args.kwargs) > 0:
+        for kw in dbt_args.kwargs:
+            args.extend([kw.key, kw.value])
+
+    background_tasks.add_task(dbt_custom_run, arguments=args)
     return dict(
         taskid="#TODO",
         msg="A dbt job has been sent in the background"
