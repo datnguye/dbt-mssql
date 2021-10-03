@@ -11,7 +11,7 @@ class PickleStorage(BaseStorage):
         self.file_path = f'{self.path}{self.type}_{{id}}.pickle'
 
 
-    def save(self, id: str, data: Any) -> bool:
+    def save(self, id: str, data: State) -> bool:
         """
         Save data to a pickle file
         """

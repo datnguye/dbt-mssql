@@ -1,10 +1,10 @@
-from enum import Enum
 import json
 import os
 import subprocess
-from queue import Queue
 import threading
 import prefect
+from enum import Enum
+from queue import Queue
 from prefect import Flow, Task
 from prefect.engine.state import Pending, Running
 from config import DBT_SINGLETON, settings
@@ -156,8 +156,7 @@ class DbtExec():
         """
         Get state of an execution
         """
-        state = self.log_storage.get(id=taskid)
-        return state
+        return self.log_storage.get(id=taskid)
 
 
     def execute(self,
