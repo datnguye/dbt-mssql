@@ -5,14 +5,15 @@ dbt:
   target: dev
   project_dir: "./dbt"
 
-log_storage: # Take first item
+log_storage: # Take first entry ONLY
   - entry:
     type: pickle
     path: C:/Temp/
   # - entry:
-  #   type: mongodb
+  #   type: mongodb #TODO
   #   uri: mongodb://localhost:27017
   #   collection: logs
-  # - sqlserver:
+  # - entry:
+  #   type: sqlserver #TODO
   #   uri: tbu
   #   collection: logs
