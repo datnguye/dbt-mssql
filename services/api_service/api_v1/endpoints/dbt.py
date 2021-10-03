@@ -37,7 +37,7 @@ def dbt_run(taskid: str, full: bool = None):
             [
                 DBT(
                     action=DbtAction.SEED.value,
-                    target='DBT_TARGET',
+                    target=DBT_TARGET,
                     project_dir=DBT_PROJECT_DIR,
                     full_refresh=True
                 ),
