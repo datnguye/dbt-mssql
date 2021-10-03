@@ -80,7 +80,7 @@ async def provision(
     )
 
 
-@router.get("/provision/{taskid}", response_model=schemas.Msg)
+@router.get("/provision/{taskid}", response_model=schemas.TaskState)
 async def get_provision_status(
     taskid: str
 ) -> Any:
@@ -88,7 +88,10 @@ async def get_provision_status(
     get_provision_status
     """
     data = instance.get_execution_state(taskid=taskid)
-    return {"msg": data.message}
+    return dict(
+        code = -1 if data.is_failed() else 0,
+        msg = data.message
+    )
 
 
 @router.post("/processing", response_model=schemas.TaskMsg)
@@ -106,7 +109,7 @@ async def processing(
     )
 
 
-@router.get("/processing/{taskid}", response_model=schemas.Msg)
+@router.get("/processing/{taskid}", response_model=schemas.TaskState)
 async def get_processing_status(
     taskid: str
 ) -> Any:
@@ -114,7 +117,10 @@ async def get_processing_status(
     Get processing state
     """
     data = instance.get_execution_state(taskid=taskid)
-    return {"msg": data.message}
+    return dict(
+        code = -1 if data.is_failed() else 0,
+        msg = data.message
+    )
 
 
 @router.post("/custom-run", response_model=schemas.TaskMsg)
@@ -148,7 +154,7 @@ async def custom_run(
     )
 
 
-@router.get("/custom-run/{taskid}", response_model=schemas.Msg)
+@router.get("/custom-run/{taskid}", response_model=schemas.TaskState)
 async def get_custom_run_status(
     taskid: str
 ) -> Any:
@@ -156,4 +162,7 @@ async def get_custom_run_status(
     Get custom run state
     """
     data = instance.get_execution_state(taskid=taskid)
-    return {"msg": data.message}
+    return dict(
+        code = -1 if data.is_failed() else 0,
+        msg = data.message
+    )
