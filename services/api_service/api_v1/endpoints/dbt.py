@@ -19,7 +19,7 @@ def dbt_run(
         result = instance.execute("Provisioning flow", [
             DBT(
                 action=DbtAction.SEED,
-                target=DBT_TARGET,
+                target="failed",
                 project_dir=DBT_PROJECT_DIR,
                 full_refresh=True
             ),

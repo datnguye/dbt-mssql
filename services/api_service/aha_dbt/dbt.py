@@ -2,7 +2,9 @@ from enum import Enum
 import json
 import os
 import subprocess
+import prefect
 from prefect import Flow, Task
+from prefect.triggers import all_successful
 from queue import Queue
 import threading
 from config import DBT_SINGLETON
@@ -79,14 +81,15 @@ class DBT():
             for key, value in kwargs.items():
                 arguments.extend([key, value])
 
-        print(arguments)
         return arguments
 
 
 class DbtTask(Task):
     def run(self, instance: DBT):
+        logger = prefect.context.get("logger")
         dbt_cmd = ["dbt"]
         dbt_cmd.extend(instance.build())
+        logger.info(dbt_cmd)
         sp = subprocess.Popen(
             dbt_cmd,
             stdout=subprocess.PIPE,
@@ -94,52 +97,57 @@ class DbtTask(Task):
             cwd=os.getcwd(),
             close_fds=True
         )
-        line = ''
         for line in iter(sp.stdout.readline, b''):
             line = line.decode('utf-8').rstrip()
-            print(line)
+            logger.info(line)
         sp.wait()
-
-        # # try to kill process by sending a signal
-        # os.killpg(os.getpgid(sp.pid), signal.SIGTERM)
+        if sp.returncode != 0:
+            raise prefect.engine.signals.FAIL()
 
         return (
             f"Command exited with return code {sp.returncode}",
             sp.returncode == 0
         )
-
-
-queue = Queue()
-def worker():
-    while True:
-        flow = queue.get()
-        print(f'Working on {flow}')
-        flow.run()
-        print(f'Finished {flow}')
-        queue.task_done()
-
+        
 
 class DbtExec():
     def __init__(self, singleton: bool = True) -> None:
         self.singleton = singleton
+        self.queue = Queue(maxsize=100) # Config max size
         if self.singleton:
-            threading.Thread(target=worker, daemon=True).start()
+            threading.Thread(target=self.__worker__, daemon=True).start()
+
+
+    def __worker__(self):
+        """"
+        Queue worker
+        """
+        while True:
+            flow = self.queue.get()
+            print(f'Working on {flow}')
+            flow.run()
+            print(f'Finished {flow}')
+            self.queue.task_done()
+
 
     def execute(self,
         flow_name: str = "Execution of dbt series | execute",
         dbts: list = []
     ):
         """
-        dbt execution using API
+        General dbt execution
         """
+        dbt_tasks = [DbtTask() for x in dbts]
         with Flow(name=flow_name) as f:
-            for dbt in dbts:
-                task_instance = DbtTask()
-                f.add_task(task_instance(instance=dbt))
-                # TODO: task failed then skip the later task(s)?
+            prev_task = None
+            for idx, dbt in enumerate(dbts):
+                task = f.add_task(dbt_tasks[idx](instance=dbt))
+                if prev_task is not None:
+                    task.set_dependencies(upstream_tasks=[prev_task])
+                prev_task = task
 
         if self.singleton:
-            queue.put(f)
+            self.queue.put(f)
             return "Task queued"
 
         return f.run()
