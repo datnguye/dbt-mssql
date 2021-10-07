@@ -14,5 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@v1.6
+        
     - name: Build the Docker image
       run: docker build --tag tuiladat/awesome-dbt:$(date +%s) . -f ./.docker/awesome-dbt.dockerfile
