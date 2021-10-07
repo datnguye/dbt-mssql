@@ -68,6 +68,6 @@ See [README.md](/services/admin_portal/README.md) for more details.
 ## WHAT next?
 - `Awesome dbt` log storage with mssql & dbt env variables
 - `Awesome dbt` authentication
-- `Awesome dbt` CI/CD with CircleCI or Github Action
+- `Awesome dbt` CD with Github Action
 - The `dbt` with Postgres DB
 - Admin portal
