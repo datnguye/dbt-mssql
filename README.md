@@ -32,9 +32,11 @@ dbt test --project-dir ./dbt --target dev [--models +exposure:*]
 ```
 
 ## Dockerizing
-Build and run dbt as [provisioning](/.docker/provision.md)
+- [Provisioning](/.docker/provision.md)
 
-Build and run dbt as [processing](/.docker/processing.md)
+- [Processing](/.docker/processing.md)
+
+- [API Service](/.docker/awesome-dbt.md)
 
 
 ## Services
@@ -64,7 +66,8 @@ See [README.md](/services/admin_portal/README.md) for more details.
 
 
 ## WHAT next?
-- `Awesome dbt` CI/CD with CircleCI or Github Action
+- `Awesome dbt` log storage with mssql & dbt env variables
 - `Awesome dbt` authentication
+- `Awesome dbt` CI/CD with CircleCI or Github Action
 - The `dbt` with Postgres DB
 - Admin portal
