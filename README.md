@@ -38,6 +38,14 @@ An API endpoint using [FastAPI](https://fastapi.tiangolo.com) with [Prefect](htt
 
 The dbt will be running as the background task, optional configured in queue.
 
+*Swagger*:
+
+![Alt text](/services/api_service/.insomia/awesome-dbt-api-docs-2021-10-03.png?raw=true "api redoc")
+
+*Redoc*:
+
+![Alt text](/services/api_service/.insomia/awesome-dbt-api-redoc-2021-10-03.png?raw=true "api redoc")
+
 
 See [README.md](/services/api_service/README.md) for more details.
 
