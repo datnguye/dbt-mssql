@@ -2,13 +2,13 @@
 This is the data services via API Endpoint
 
 ### DEV
-- Set the `python` alias (if Linux)
+- [Optional] Set the `python` alias (if Linux)
 ```
 update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1
 python --version
 ```
-- [Install dbt](TBU)
-- Activate venv, install [requirements]()
+- [Install dbt & activate env](../../LOCALDEV.md)
+
 
 #### Start service locally
 ```
