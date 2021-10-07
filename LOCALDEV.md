@@ -1,16 +1,16 @@
 # Requirements:
-- python >=3.7.12
+- python >=3.7.x
 - dbt >=0.20.2
 
 
-# Steps to intialize local dev enviroment
+# Getting ready?
 
 ## Install the Microsoft ODBC driver for SQL Server (Linux only)
 [Here](https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15)
 
 ## Install dbt & the mssql plugin
-dbt installed version: 0.20.2
-Plugins - sqlserver: 0.20.1
+Installed version: `dbt 0.20.2`
+Plugins - `sqlserver: 0.20.1`
 
 - Windows:
 ```

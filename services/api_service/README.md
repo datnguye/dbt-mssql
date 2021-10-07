@@ -1,8 +1,5 @@
-# SERVICES
-This is the data services
-
-## dbt Api service
-Root folder [Here](apis)
+# Awesome dbt
+This is the data services via API Endpoint
 
 ### DEV
 - Set the `python` alias (if Linux)
