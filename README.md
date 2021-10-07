@@ -4,6 +4,9 @@ This is where to start the data transformation with dbt and SQL Server.
 
 > Start your local development with `.\env\Scripts\activate`. For more details: [LOCALDEV.md](LOCALDEV.md)
 
+[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml)
+
+
 ## Common commands:
 ### Seed data
 [Covid](/dbt/data/covid/covid_raw.csv)
@@ -34,6 +37,8 @@ Build and run dbt as [processing](/.docker/processing.md)
 
 ## Services
 ### API service - Awesome dbt
+[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml)
+
 An API endpoint using [FastAPI](https://fastapi.tiangolo.com) with [Prefect](https://docs.prefect.io/) as a Dataflow
 
 The dbt will be running as the background task, optional configured in queue.
