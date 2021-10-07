@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file /.docker/awesome-dbt.dockerfile --tag awesome-dbt:$(date +%s)
+      run: docker build --tag tuiladat/awesome-dbt:$(date +%s) . -f ./.docker/awesome-dbt.dockerfile
