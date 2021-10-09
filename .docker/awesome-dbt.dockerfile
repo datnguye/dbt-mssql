@@ -22,16 +22,12 @@ COPY ./dbt ./app/dbt
 RUN mkdir app/api
 COPY ./services/api_service ./app/api
 
-# Setup dbt profiles.yml
+# Create dbt profiles file
+# Recommend to use environment variables in: profiles.yml/outputs.prod
+# [dbt env_var](https://docs.getdbt.com/reference/dbt-jinja-functions/env_var)
 RUN mkdir ~/.dbt
 COPY ./.dbt_profiles.yml ./.dbt_profiles.yml
 RUN  cp ./.dbt_profiles.yml ~/.dbt/profiles.yml
-RUN export ENV_DBT_SERVER=${{ secrets.ENV_DBT_SERVER }}
-RUN export ENV_DBT_PORT=${{ secrets.ENV_DBT_PORT }}
-RUN export ENV_DBT_DATABASE=${{ secrets.ENV_DBT_DATABASE }}
-RUN export ENV_DBT_SCHEMA=${{ secrets.ENV_DBT_SCHEMA }}
-RUN export ENV_DBT_USER=${{ secrets.ENV_DBT_USER }}
-RUN export ENV_DBT_PASSWORD=${{ secrets.ENV_DBT_PASSWORD }}
 
 # Install requirements
 COPY ./requirements.txt ./requirements.txt
