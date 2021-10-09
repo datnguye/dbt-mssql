@@ -94,8 +94,39 @@ class DBT():
 
 
 class DbtTask(Task):
+    def __set_var__(self):
+        """
+        Initiate enviroment variables
+        """
+        if settings.DBT_STORAGE["type"] == "sqlserver":
+            os.environ["ENV_DBT_SERVER"] = settings.DBT_STORAGE["server"]
+            os.environ["ENV_DBT_PORT"] = str(settings.DBT_STORAGE["port"])
+            os.environ["ENV_DBT_DATABASE"] = settings.DBT_STORAGE["database"]
+            os.environ["ENV_DBT_SCHEMA"] = settings.DBT_STORAGE.get("schema", None) or "dbo"
+            os.environ["ENV_DBT_USER"] = settings.DBT_STORAGE["user"]
+            os.environ["ENV_DBT_PASSWORD"] = settings.DBT_STORAGE["password"]
+
+        
+    def __del_var__(self):
+        """
+        Clean up the enviroment variables
+        """
+        if settings.DBT_STORAGE["type"] == "sqlserver":
+            del os.environ["ENV_DBT_SERVER"]
+            del os.environ["ENV_DBT_PORT"]
+            del os.environ["ENV_DBT_DATABASE"]
+            del os.environ["ENV_DBT_SCHEMA"]
+            del os.environ["ENV_DBT_USER"]
+            del os.environ["ENV_DBT_PASSWORD"]
+
+
     def run(self, instance: DBT):
+        """
+        Run dbt in subprocess
+        """
         logger = prefect.context.get("logger")
+        self.__set_var__()
+
         dbt_cmd = ["dbt"]
         dbt_cmd.extend(instance.build())
         logger.info(dbt_cmd)
@@ -114,6 +145,8 @@ class DbtTask(Task):
         sp.wait()
         if sp.returncode != 0:
             raise prefect.engine.signals.FAIL()
+
+        self.__del_var__()
 
         return (
             f"Command exited with return code {sp.returncode}",

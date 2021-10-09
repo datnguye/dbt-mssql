@@ -4,15 +4,24 @@ dbt:
   singleton: True
   target: dev
   project_dir: "./dbt"
+  storage:
+  - entry:
+    type: sqlserver
+    server: env_sqlserver_host_secret
+    port: 1433
+    database: dbt
+    schema: analytic
+    user: env_sqlserver_user_secret
+    password: env_sqlserver_password_secret
 
 log_storage: # Take first entry ONLY
   - entry:
     type: sqlserver
-    server: env_sqlserver_host
+    server: env_sqlserver_host_secret
     port: 1433
     database: dbt
-    user: env_sqlserver_secret_name
-    password: env_sqlserver_secret_value
+    user: env_sqlserver_user_secret
+    password: env_sqlserver_password_secret
   - entry:
     type: pickle
     path: C:/Temp/

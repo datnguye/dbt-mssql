@@ -77,7 +77,7 @@ See [README.md](/services/admin_portal/README.md) for more details.
 
 
 ## WHAT next?
-- `Awesome dbt` dbt env variables
+- `Awesome dbt` github action - publish
 - `Awesome dbt` authentication
 - `Awesome dbt` CD with Github Action
 - The `dbt` with Postgres DB

@@ -18,7 +18,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Awesome dbt"
 
-    def __get_storage__(type: str):
+
+    def __get_log_storage__(type: str):
         """
         Get storage configuration dict
         """
@@ -39,12 +40,32 @@ class Settings(BaseSettings):
             )
 
         return None
-
-
     LOG_STORAGE = None
     if initial_info.log_storage and len(initial_info.log_storage) > 0:
         type = initial_info.log_storage[0].type
-        LOG_STORAGE = __get_storage__(type=type)
+        LOG_STORAGE = __get_log_storage__(type=type)
+
+
+    def __get_dbt_storage__(type: str):
+        """
+        Get dbt storage configuration dict
+        """
+        if type == "sqlserver":
+            return dict(
+                type=type,
+                server=os.environ[initial_info.dbt.storage [0].server],
+                port=initial_info.dbt.storage [0].port or 1433,
+                database=initial_info.dbt.storage [0].database,
+                schema=initial_info.dbt.storage [0].schema,
+                user=os.environ[initial_info.dbt.storage [0].user],
+                password=os.environ[initial_info.dbt.storage [0].password]
+            )
+
+        raise "Not support dbt storage"
+    DBT_STORAGE = None
+    if initial_info.dbt.storage and len(initial_info.dbt.storage) > 0:
+        type = initial_info.dbt.storage[0].type
+        DBT_STORAGE = __get_dbt_storage__(type=type)
 
 
 settings = Settings()

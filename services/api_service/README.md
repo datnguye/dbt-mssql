@@ -12,6 +12,9 @@ python --version
 
 #### Start service locally
 ```
+set env_sqlserver_user_secret=datnguye
+set env_sqlserver_password_secret=datnguye
+set env_sqlserver_host_secret=DAT\DAT19
 uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir "./services/api_service" --reload
 ```
 

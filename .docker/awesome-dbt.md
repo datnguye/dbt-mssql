@@ -11,7 +11,11 @@ docker build --tag tuiladat/awesome-dbt:latest . -f ./.docker/awesome-dbt.docker
 ### Run containter
 ```
 docker rm awesome-dbt
-docker run --publish 8000:8000 --name "awesome-dbt" tuiladat/awesome-dbt
+docker run --publish 8000:8000 --name "awesome-dbt" ^
+    --env SERVER="DAT\DAT19" ^
+    --env USER="datnguye" ^
+    --env PASSWORD="datnguye" ^
+    tuiladat/awesome-dbt
 ```
 
 

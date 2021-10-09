@@ -36,5 +36,13 @@ RUN pip3 install -r requirements.txt
 # Install dbt packages
 RUN dbt deps --project-dir ./app/dbt
 
+# Arguments
+ENV SERVER="dummy"
+ENV USER="dummy"
+ENV PASSWORD="dummy"
+
 # Entry point
-CMD uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir "./app/api"
+CMD export env_sqlserver_host_secret=${SERVER} && \
+    export env_sqlserver_user_secret=${USER} && \
+    export env_sqlserver_password_secret=${PASSWORD} && \
+    uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir "./app/api"
