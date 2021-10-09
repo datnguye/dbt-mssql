@@ -10,6 +10,17 @@ BUILD statuses:
 
 
 ## Common commands:
+### Set enviroment variables before any dbt operations as we're gonna use dbt `env_var` within our `profiles.yml`:
+- Windows
+```
+set ENV_DBT_SERVER=DAT\DAT19
+set ENV_DBT_PORT=1433
+set ENV_DBT_DATABASE=PLAY
+set ENV_DBT_SCHEMA=analytic
+set ENV_DBT_USER=datnguye
+set ENV_DBT_PASSWORD=datnguye
+```
+
 ### Seed data
 [Covid](/dbt/data/covid/covid_raw.csv)
 ```
@@ -66,7 +77,7 @@ See [README.md](/services/admin_portal/README.md) for more details.
 
 
 ## WHAT next?
-- `Awesome dbt` log storage with mssql & dbt env variables
+- `Awesome dbt` dbt env variables
 - `Awesome dbt` authentication
 - `Awesome dbt` CD with Github Action
 - The `dbt` with Postgres DB
