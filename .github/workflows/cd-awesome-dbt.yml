@@ -27,8 +27,10 @@ jobs:
         with:
           images: tuiladat/awesome-dbt
           
-      - name: Build Docker image
-        run: docker build --tag ${{ steps.meta.outputs.tags }} --label ${{ steps.meta.outputs.labels }} . -f ./.docker/awesome-dbt.dockerfile
-
-      - name: Push Docker image
-        run: docker push tuiladat/awesome-dbt:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
