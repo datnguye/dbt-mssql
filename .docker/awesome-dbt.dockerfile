@@ -22,7 +22,7 @@ COPY ./dbt ./app/dbt
 RUN mkdir app/api
 COPY ./services/api_service ./app/api
 
-# Create dbt profiles file
+# Create dbt profiles.yml
 # Recommend to use environment variables in: profiles.yml/outputs.prod
 # [dbt env_var](https://docs.getdbt.com/reference/dbt-jinja-functions/env_var)
 RUN mkdir ~/.dbt
@@ -35,10 +35,6 @@ RUN pip3 install -r requirements.txt
 
 # Install dbt packages
 RUN dbt deps --project-dir ./app/dbt
-
-# Seed data (OPTIONAL)
-# TODO: Secret chick HERE
-# RUN dbt seed --project-dir ./app/dbt --target prod
 
 # Entry point
 CMD uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir "./app/api"
