@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 import os
 import subprocess
@@ -7,6 +8,7 @@ from enum import Enum
 from queue import Queue
 from prefect import Flow, Task
 from prefect.engine.state import Pending, Running
+from prefect.schedules.schedules import IntervalSchedule
 from config import DBT_SINGLETON, settings
 from storage.factory import StorageFactory
 from storage.base import BaseStorage
@@ -125,15 +127,29 @@ class DbtExec():
         self.singleton = singleton
         self.queue = Queue(maxsize=100) # Config max size
         if self.singleton:
-            threading.Thread(target=self.__worker__, daemon=True).start()
-        self.log_storage = StorageFactory(
-            base=BaseStorage(settings.LOG_STORAGE)
-        ).get_storage_instance()
+            threading.Thread(target=self.__run_flow_worker__, daemon=True).start()
+        self.log_storage = StorageFactory(base=BaseStorage(settings.LOG_STORAGE)).get_storage_instance()
+        if self.log_storage:
+            threading.Thread(target=self.__maintenance_worker__, daemon=True).start()
 
 
-    def __worker__(self):
+    def __maintenance_worker__(self):
         """"
-        Queue worker
+        Maintenance worker
+        """
+        schedule = IntervalSchedule(
+            start_date=datetime.utcnow() + timedelta(seconds=1),
+            interval=timedelta(days=1)
+        )
+        with Flow("Dbt Maintenance", schedule=schedule) as flow:
+            log_task = self.log_storage.maintenance()
+            
+        flow.run()
+
+
+    def __run_flow_worker__(self):
+        """"
+        Queue worker - Running flow in queue if configured
         """
         while True:
             flow_id, flow = self.queue.get()
@@ -183,5 +199,6 @@ class DbtExec():
             return "Task queued"
 
         return self.__run_flow__(flow_id=taskid, flow=f)
+
 
 instance = DbtExec(singleton=DBT_SINGLETON)

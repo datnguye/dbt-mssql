@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Any
 from sqlalchemy.sql.expression import desc
 from storage.sqlserver_schema import DbtLog
@@ -18,7 +19,7 @@ class SqlServerStorage(BaseStorage):
                     port=self.storage_config['port'],
                     database=self.storage_config['database']
                 ),
-            echo=True
+            echo=True # shouldn't be enabled in prod
         )
         SQLModel.metadata.create_all(
             bind=self.engine
@@ -43,7 +44,10 @@ class SqlServerStorage(BaseStorage):
         raise "Not yet impletmented"
 
 
-    def save(self, id: str, data: Any) -> bool:
+    def save(self, id: str, data: State) -> bool:
+        """
+        Save task status
+        """
         with Session(bind=self.engine) as session:
             session.add(DbtLog(TaskId=id, Data=str(data)))
             session.commit()
@@ -52,6 +56,9 @@ class SqlServerStorage(BaseStorage):
 
     
     def get(self, id) -> State:
+        """
+        Get task status
+        """
         with Session(bind=self.engine) as session:
             statement = select(DbtLog)\
                         .where(DbtLog.TaskId == id)\
@@ -61,7 +68,6 @@ class SqlServerStorage(BaseStorage):
 
             if not result:
                 return TriggerFailed(message=f"ID: {id} Not found")
-
             if "success" in result.Data.lower():
                 return Success(message=result.Data)
             if "running" in result.Data.lower():
@@ -69,3 +75,19 @@ class SqlServerStorage(BaseStorage):
             
             return Pending(message=result.Data)
 
+
+    def maintenance(self, log_retention_day: int = 30):
+        """
+        Run maintenance:
+        - Log retention
+        """
+        with Session(bind=self.engine) as session:
+            penalty_date = datetime.utcnow() - timedelta(days=log_retention_day)
+            statement = select(DbtLog).where(DbtLog.Timestamp < penalty_date)
+            deletes = session.exec(statement)
+
+            if deletes:
+                for delete in deletes:
+                    session.delete(delete)
+                session.commit()
+        

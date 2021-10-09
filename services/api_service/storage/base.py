@@ -14,3 +14,7 @@ class BaseStorage():
     
     def get(self, id) -> Any:
         raise Exception("Not yet implemented")
+        
+
+    def maintenance(self, log_retention_day: int = 30) -> bool:
+        return True
