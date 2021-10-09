@@ -78,6 +78,5 @@ See [README.md](/services/admin_portal/README.md) for more details.
 
 ## WHAT next?
 - `Awesome dbt` key vault / authentication / Serialize dbt Result
-- `Awesome dbt` CD with Github Action
 - The `dbt` with Postgres DB
 - Admin portal
