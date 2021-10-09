@@ -77,7 +77,6 @@ See [README.md](/services/admin_portal/README.md) for more details.
 
 
 ## WHAT next?
-- `Awesome dbt` github action - publish
 - `Awesome dbt` key vault / authentication / Serialize dbt Result
 - `Awesome dbt` CD with Github Action
 - The `dbt` with Postgres DB
