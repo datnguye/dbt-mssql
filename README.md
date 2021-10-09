@@ -4,9 +4,9 @@ This is where to start the data transformation with dbt and SQL Server.
 
 > Start your local development with `.\env\Scripts\activate`. For more details: [LOCALDEV.md](LOCALDEV.md)
 
-BUILD statuses:
+[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml)
 
-[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml/badge.svg?branch=main)](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml)
+[![Awesome dbt Publish](https://github.com/datnguye/dbt-mssql/actions/workflows/cd-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/cd-awesome-dbt.yml)
 
 
 ## Common commands:
@@ -52,7 +52,8 @@ dbt test --project-dir ./dbt --target dev [--models +exposure:*]
 
 ## Services
 ### API service - Awesome dbt
-[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml/badge.svg?branch=main)](https://github.com/datnguye/dbt-mssql/actions/workflows/di-awesome-dbt.yml)
+[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml)
+[![Awesome dbt Publish](https://github.com/datnguye/dbt-mssql/actions/workflows/cd-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/cd-awesome-dbt.yml)
 
 An API endpoint using [FastAPI](https://fastapi.tiangolo.com) with [Prefect](https://docs.prefect.io/) as a Dataflow
 
