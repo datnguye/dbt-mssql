@@ -1,73 +1,71 @@
-import os
-import uuid
 from typing import Any
+from sqlalchemy.sql.expression import desc
+from storage.sqlserver_schema import DbtLog
 from storage.base import BaseStorage
-from sqlmodel import Session, Field, SQLModel, create_engine
-from datetime import datetime
+from sqlmodel import Session, SQLModel, create_engine, select
+from prefect.engine.state import Pending, Running, State, Success, TriggerFailed
 
-
-class DbtLog(SQLModel, table=True, table_name="__Dbt_Log"):
-    Id: int = Field(default=None, primary_key=True)
-    TaskId: str = Field(max_length=128)
-    Data: str = Field(index=False)
-    Timestamp: datetime = Field(index=False, default=datetime.utcnow())
-    
 
 class SqlServerStorage(BaseStorage):
     def __init__(self, storage_config: dict = None) -> None:
         super().__init__(storage_config=storage_config)
-        self.url_template = "mssql+pyodbc://{user}:{password}@{server}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
         self.engine = create_engine(
-            url=self.url_template.format(
+            url="mssql+pyodbc://{user}:{password}@{server}:{port}/{database}?driver=ODBC+Driver+17+for+SQL+Server"\
+                .format(
                     user=self.storage_config['user'],
                     password=self.storage_config['password'],
                     server=self.storage_config['server'],
                     port=self.storage_config['port'],
                     database=self.storage_config['database']
-                )
+                ),
+            echo=True
         )
         SQLModel.metadata.create_all(
             bind=self.engine
-            #TODO Specify tables
         )
             
-        
-
     
-    # def __migration__(self):
-    #     """
-    #     Initial schema
-    #     """
-    #     migration_dir = f"{os.path.dirname(os.path.realpath(__file__))}/sqlserver_migrations"
-    #     migration_sqls = [
-    #         f for f in os.listdir(migration_dir) 
-    #         if f.startswith("mig_") and f.endswith(".sql")
-    #     ]
+    def __migration__(self):
+        """
+        Schema mirgration
+        """
+        # migration_dir = f"{os.path.dirname(os.path.realpath(__file__))}/sqlserver_migrations"
+        # migration_sqls = [
+        #     f for f in os.listdir(migration_dir) 
+        #     if f.startswith("mig_") and f.endswith(".sql")
+        # ]
 
-    #     # get the last migration
+        # # get the last migration
         
 
-    #     # run migration from the last one
-    #     for sql in migration_sqls.sort():
-    #         pass
+        # # run migration from the last one
+        # for sql in migration_sqls.sort():
+        raise "Not yet impletmented"
 
 
     def save(self, id: str, data: Any) -> bool:
-        engine = create_engine(
-            url=self.url_template.format(
-                    user=self.storage_config['user'],
-                    password=self.storage_config['password'],
-                    server=self.storage_config['server'],
-                    port=self.storage_config['port'],
-                    database=self.storage_config['database']
-                )
-        )
-        with Session(bind=engine) as session:
+        with Session(bind=self.engine) as session:
             session.add(DbtLog(TaskId=id, Data=str(data)))
             session.commit()
 
         return True
 
     
-    def get(self, id) -> Any:
-        return super().get(id)
+    def get(self, id) -> State:
+        with Session(bind=self.engine) as session:
+            statement = select(DbtLog)\
+                        .where(DbtLog.TaskId == id)\
+                        .order_by(desc(DbtLog.Timestamp))\
+                        .limit(1)
+            result = session.exec(statement).first()
+
+            if not result:
+                return TriggerFailed(message=f"ID: {id} Not found")
+
+            if "success" in result.Data.lower():
+                return Success(message=result.Data)
+            if "running" in result.Data.lower():
+                return Running(message=result.Data)
+            
+            return Pending(message=result.Data)
+
