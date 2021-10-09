@@ -11,3 +11,4 @@ fastapi==0.54.1
 python-jose==3.3.0
 pydantic==1.8.2
 pyyaml==5.4.1
+sqlmodel==0.0.4

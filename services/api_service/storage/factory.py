@@ -1,3 +1,4 @@
+from storage.sqlserver import SqlServerStorage
 from storage.base import BaseStorage
 from storage.pickle import PickleStorage
 
@@ -14,3 +15,6 @@ class StorageFactory(object):
 
         if self.base.type == "pickle":
             return PickleStorage(self.base.storage_config)
+
+        if self.base.type == "sqlserver":
+            return SqlServerStorage(self.base.storage_config)

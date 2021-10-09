@@ -7,13 +7,12 @@ dbt:
 
 log_storage: # Take first entry ONLY
   - entry:
+    type: sqlserver
+    server: env_sqlserver_host
+    port: 1433
+    database: dbt
+    user: env_sqlserver_secret_name
+    password: env_sqlserver_secret_value
+  - entry:
     type: pickle
     path: C:/Temp/
-  # - entry:
-  #   type: mongodb #TODO
-  #   uri: mongodb://localhost:27017
-  #   collection: logs
-  # - entry:
-  #   type: sqlserver #TODO
-  #   uri: tbu
-  #   collection: logs
