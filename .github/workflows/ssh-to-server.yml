@@ -1,6 +1,8 @@
 name: SSH deployment
 
 on:
+  push:
+    branches: [ unixrelease ]
   pull_request:
     branches: [ unixrelease ]
 
