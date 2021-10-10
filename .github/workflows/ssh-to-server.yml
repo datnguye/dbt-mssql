@@ -22,5 +22,16 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # pull source 
             mv dbt-mssql dbt-mssql-$(date +%s) > /dev/null
             git clone https://${{ secrets.GIHUB_ACTION_USER }}:${{ secrets.GIHUB_ACTION_TOKEN }}@github.com/datnguye/dbt-mssql.git
+            
+            # create env for: install dbt and services
+            
+            # create service unit file
+            
+            # create nginx file
+            
+            # systemctl restart *.service
+            
+            
