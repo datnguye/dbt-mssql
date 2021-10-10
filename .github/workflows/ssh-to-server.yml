@@ -23,6 +23,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             mv dbt-mssql dbt-mssql-$(date +%s) > /dev/null
-            export GIT_ASKPASS=${{ secrets.SSH_PASSPHRASE }}
+            export SSH_ASKPASS=${{ secrets.SSH_PASSPHRASE }}
             git clone git@github.com:datnguye/dbt-mssql.git --branch release --config core.sshCommand="ssh -i ${{ secrets.SSH_KEY_PATH }}"
 
