@@ -1,18 +1,12 @@
-name: SSH to server
+name: SSH deployment
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches: [ unixrelease ]
 
 jobs:
-  ssh:
+  checkout:
     runs-on: ubuntu-20.04
-
     steps:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
@@ -22,16 +16,53 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # pull source 
             mv dbt-mssql dbt-mssql-$(date +%s) > /dev/null
             git clone https://${{ secrets.GIHUB_ACTION_USER }}:${{ secrets.GIHUB_ACTION_TOKEN }}@github.com/datnguye/dbt-mssql.git
             
-            # create env for: install dbt and services
+  install-ODBC:
+    needs: checkout
+    runs-on: ubuntu-20.04
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Install ODBC"
             
-            # create service unit file
+  install-enviroment:
+    needs: checkout
+    runs-on: ubuntu-20.04
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "create env for: install dbt and services"
             
-            # create nginx file
-            
-            # systemctl restart *.service
+  on-service:
+    needs:
+      - install-enviroment
+      - install-ODBC
+    runs-on: ubuntu-20.04
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "create service unit file"
+            echo "create nginx file"
+            echo "systemctl restart *.service"
             
             
