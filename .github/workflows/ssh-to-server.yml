@@ -48,9 +48,7 @@ jobs:
             echo "create env for: install dbt and services"
             
   on-service:
-    needs:
-      - install-enviroment
-      - install-ODBC
+    needs: [install-enviroment, install-ODBC]
     runs-on: ubuntu-20.04
     steps:
       - name: executing remote ssh commands using password
