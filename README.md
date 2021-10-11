@@ -4,8 +4,9 @@ This is where to start the data transformation with dbt and SQL Server.
 
 > Start your local development with `.\env\Scripts\activate`. For more details: [LOCALDEV.md](LOCALDEV.md)
 
-[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml)
+[![SSH deployment](https://github.com/datnguye/dbt-mssql/actions/workflows/ssh-to-server.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/ssh-to-server.yml)
 
+[![Awesome dbt CI](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/ci-awesome-dbt.yml)
 [![Awesome dbt Publish](https://github.com/datnguye/dbt-mssql/actions/workflows/cd-awesome-dbt.yml/badge.svg)](https://github.com/datnguye/dbt-mssql/actions/workflows/cd-awesome-dbt.yml)
 
 
